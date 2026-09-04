@@ -1,0 +1,1781 @@
+{
+  "info": {
+    "name": "Agharina - API complete (tous scenarios)",
+    "description": "Collection complete pour tester l'API Agharina (vente/location immobiliere).\n\nORDRE D'EXECUTION RECOMMANDE : suivre les dossiers de 01 a 10 dans l'ordre, chaque requete alimente automatiquement les variables utilisees par les suivantes (token, reference du bien, ids...).\n\nVariable {{base_url}} = http://127.0.0.1:8000/api (a adapter).",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://127.0.0.1:8000/api"
+    },
+    {
+      "key": "token_parrain",
+      "value": ""
+    },
+    {
+      "key": "token_filleul",
+      "value": ""
+    },
+    {
+      "key": "token_admin",
+      "value": ""
+    },
+    {
+      "key": "code_invitation_parrain",
+      "value": ""
+    },
+    {
+      "key": "ville_id",
+      "value": ""
+    },
+    {
+      "key": "quartier_id",
+      "value": ""
+    },
+    {
+      "key": "equipement_piscine_id",
+      "value": ""
+    },
+    {
+      "key": "equipement_camera_id",
+      "value": ""
+    },
+    {
+      "key": "bien_terrain_ref",
+      "value": ""
+    },
+    {
+      "key": "bien_terrain_id",
+      "value": ""
+    },
+    {
+      "key": "bien_appart_ref",
+      "value": ""
+    },
+    {
+      "key": "bien_appart_id",
+      "value": ""
+    },
+    {
+      "key": "bien_ceremonie_ref",
+      "value": ""
+    },
+    {
+      "key": "transaction_vente_id",
+      "value": ""
+    },
+    {
+      "key": "transaction_location_id",
+      "value": ""
+    },
+    {
+      "key": "cadeau_id",
+      "value": ""
+    }
+  ],
+  "item": [
+    {
+      "name": "01 - Authentification & Parrainage",
+      "description": "",
+      "item": [
+        {
+          "name": "1. Inscription du parrain",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": []
+            },
+            "description": "Cree le compte du proprietaire/gestionnaire. Retourne un token et le lien d'invitation.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"mamadou_proprio\",\n  \"email\": \"mamadou@agharina.mr\",\n  \"password\": \"MotDePasse123!\",\n  \"first_name\": \"Mamadou\",\n  \"last_name\": \"Ba\",\n  \"telephone\": \"22212345678\",\n  \"est_gestionnaire\": true\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const data = pm.response.json();",
+                  "pm.test('Statut 201', () => pm.response.to.have.status(201));",
+                  "pm.collectionVariables.set('token_parrain', data.token);",
+                  "console.log('Lien invitation:', data.lien_invitation);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "2. Profil du parrain (recuperer code_invitation)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Token {{token_parrain}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": []
+            },
+            "description": "Affiche le profil complet, dont code_invitation et lien_invitation a partager."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const data = pm.response.json();",
+                  "pm.test('Statut 200', () => pm.response.to.have.status(200));",
+                  "pm.collectionVariables.set('code_invitation_parrain', data.code_invitation);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "3. Inscription du filleul (via lien d'invitation)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": []
+            },
+            "description": "Le champ code_parrain rattache automatiquement ce compte au parrain (invite_par).",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"fatima_cliente\",\n  \"email\": \"fatima@example.com\",\n  \"password\": \"MotDePasse123!\",\n  \"first_name\": \"Fatima\",\n  \"last_name\": \"Mint Salem\",\n  \"telephone\": \"22298765432\",\n  \"code_parrain\": \"{{code_invitation_parrain}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const data = pm.response.json();",
+                  "pm.test('Statut 201', () => pm.response.to.have.status(201));",
+                  "pm.collectionVariables.set('token_filleul', data.token);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "4. Connexion (obtenir un token existant)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": []
+            },
+            "description": "Endpoint generique de login, utile pour se reconnecter (ou pour un admin, voir dossier 10).",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"mamadou_proprio\",\n  \"password\": \"MotDePasse123!\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "5. Profil du filleul (verifier invite_par)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Token {{token_filleul}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": []
+            },
+            "description": "Verifie que le champ invite_par pointe bien vers le parrain."
+          },
+          "response": []
+        },
+        {
+          "name": "6. Solde de points du parrain (avant transaction)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Token {{token_parrain}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": []
+            },
+            "description": "A ce stade solde_points doit etre 0 (aucune transaction confirmee encore)."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "02 - Localisation (Ville / Quartier)",
+      "description": "",
+      "item": [
+        {
+          "name": "1. Creer une ville",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Token {{token_parrain}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": []
+            },
+            "description": "",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nom\": \"Nouakchott\",\n  \"region\": \"Nouakchott\",\n  \"pays\": \"Mauritanie\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const data = pm.response.json();",
+                  "pm.test('Statut 201', () => pm.response.to.have.status(201));",
+                  "pm.collectionVariables.set('ville_id', data.id);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "2. Creer un quartier",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Token {{token_parrain}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": []
+            },
+            "description": "",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"ville\": \"{{ville_id}}\",\n  \"nom\": \"Tevragh Zeina\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const data = pm.response.json();",
+                  "pm.test('Statut 201', () => pm.response.to.have.status(201));",
+                  "pm.collectionVariables.set('quartier_id', data.id);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "3. Lister les villes (+ leurs quartiers)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": []
+            },
+            "description": ""
+          },
+          "response": []
+        },
+        {
+          "name": "4. Lister les quartiers d'une ville",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/?ville={{ville_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [],
+              "query": [
+                {
+                  "key": "ville",
+                  "value": "{{ville_id}}"
+                }
+              ]
+            },
+            "description": ""
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "03 - Equipements (caracteristiques des biens)",
+      "description": "",
+      "item": [
+        {
+          "name": "1. Creer equipement Piscine",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Token {{token_parrain}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": []
+            },
+            "description": "",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nom\": \"Piscine\",\n  \"icone\": \"piscine\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const data = pm.response.json();",
+                  "pm.collectionVariables.set('equipement_piscine_id', data.id);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "2. Creer equipement Camera de securite",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Token {{token_parrain}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": []
+            },
+            "description": "",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nom\": \"Camera de securite\",\n  \"icone\": \"camera\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const data = pm.response.json();",
+                  "pm.collectionVariables.set('equipement_camera_id', data.id);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "3. Creer equipement Garage / Chambre gardien / Balcon (exemples)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Token {{token_parrain}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": []
+            },
+            "description": "Dupliquer cette requete pour 'Chambre de gardien', 'Balcon', 'Climatisation', 'Wifi', etc.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nom\": \"Garage\",\n  \"icone\": \"garage\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "4. Lister tous les equipements",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": []
+            },
+            "description": ""
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "04 - Biens immobiliers (creation par type)",
+      "description": "",
+      "item": [
+        {
+          "name": "1. Creer un TERRAIN a vendre",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Token {{token_parrain}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": []
+            },
+            "description": "Bien de type TERRAIN : unite_prix doit etre 'forfait' car c'est une vente.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"titre\": \"Terrain vue mer - 500 m2\",\n  \"description\": \"Beau terrain plat, proche de la plage, ideal pour construction.\",\n  \"type_bien\": \"terrain\",\n  \"type_transaction\": \"vente\",\n  \"prix\": 15000000,\n  \"unite_prix\": \"forfait\",\n  \"ville\": \"{{ville_id}}\",\n  \"quartier\": \"{{quartier_id}}\",\n  \"adresse_complete\": \"Route de la Corniche\",\n  \"latitude\": 18.0858,\n  \"longitude\": -15.9785,\n  \"nb_proprietaires\": 1,\n  \"equipements_ids\": [],\n  \"detail_terrain\": {\n    \"superficie_m2\": 500,\n    \"longueur_m\": 25,\n    \"largeur_m\": 20,\n    \"titre_foncier\": \"TF-2024-00123\",\n    \"borne\": true\n  }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const data = pm.response.json();",
+                  "pm.test('Statut 201', () => pm.response.to.have.status(201));",
+                  "pm.collectionVariables.set('bien_terrain_ref', data.reference);",
+                  "pm.collectionVariables.set('bien_terrain_id', data.id);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "2. Creer un APPARTEMENT meuble a louer (par mois)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Token {{token_parrain}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": []
+            },
+            "description": "",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"titre\": \"Appartement meuble 3 pieces\",\n  \"description\": \"Appartement standing, proche du centre-ville, entierement meuble.\",\n  \"type_bien\": \"appartement\",\n  \"type_transaction\": \"location\",\n  \"meuble\": true,\n  \"nb_chambres\": 2,\n  \"nb_salles_bain\": 2,\n  \"nb_etages\": 1,\n  \"prix\": 120000,\n  \"unite_prix\": \"mois\",\n  \"ville\": \"{{ville_id}}\",\n  \"quartier\": \"{{quartier_id}}\",\n  \"adresse_complete\": \"Ilot O, Tevragh Zeina\",\n  \"latitude\": 18.0919,\n  \"longitude\": -15.9784,\n  \"nb_proprietaires\": 1,\n  \"equipements_ids\": [\n    \"{{equipement_piscine_id}}\",\n    \"{{equipement_camera_id}}\"\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const data = pm.response.json();",
+                  "pm.test('Statut 201', () => pm.response.to.have.status(201));",
+                  "pm.collectionVariables.set('bien_appart_ref', data.reference);",
+                  "pm.collectionVariables.set('bien_appart_id', data.id);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "3. Creer une MAISON DE CEREMONIE (location par jour, avec service)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Token {{token_parrain}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": []
+            },
+            "description": "",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"titre\": \"Salle de ceremonie Al Amal\",\n  \"description\": \"Grande salle climatisee pour mariages et evenements.\",\n  \"type_bien\": \"ceremonie\",\n  \"type_transaction\": \"location\",\n  \"prix\": 250000,\n  \"unite_prix\": \"jour\",\n  \"ville\": \"{{ville_id}}\",\n  \"quartier\": \"{{quartier_id}}\",\n  \"latitude\": 18.0801,\n  \"longitude\": -15.9701,\n  \"nb_proprietaires\": 2,\n  \"detail_ceremonie\": {\n    \"avec_service\": true,\n    \"description_service\": \"Traiteur, decoration et personnel inclus.\",\n    \"capacite_personnes\": 500\n  }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const data = pm.response.json();",
+                  "pm.test('Statut 201', () => pm.response.to.have.status(201));",
+                  "pm.collectionVariables.set('bien_ceremonie_ref', data.reference);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "4. Creer un DUPLEXE a vendre",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Token {{token_parrain}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": []
+            },
+            "description": "",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"titre\": \"Duplexe moderne 4 chambres\",\n  \"type_bien\": \"duplexe\",\n  \"type_transaction\": \"vente\",\n  \"meuble\": false,\n  \"nb_chambres\": 4,\n  \"nb_salles_bain\": 3,\n  \"nb_etages\": 2,\n  \"prix\": 45000000,\n  \"unite_prix\": \"forfait\",\n  \"ville\": \"{{ville_id}}\",\n  \"latitude\": 18.09,\n  \"longitude\": -15.96,\n  \"nb_proprietaires\": 1\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "5. Creer un local COMMERCIAL (location par 3 jours)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Token {{token_parrain}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": []
+            },
+            "description": "",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"titre\": \"Local commercial - stand exposition\",\n  \"type_bien\": \"commercial\",\n  \"type_transaction\": \"location\",\n  \"prix\": 60000,\n  \"unite_prix\": \"3jours\",\n  \"ville\": \"{{ville_id}}\",\n  \"latitude\": 18.085,\n  \"longitude\": -15.975,\n  \"nb_proprietaires\": 1\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "6. Lister tous les biens (publics)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": []
+            },
+            "description": "Aucune authentification requise. Ne montre que les biens actifs."
+          },
+          "response": []
+        },
+        {
+          "name": "7. Filtrer : appartements a louer dans une ville, meubles, budget",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/?type_bien=appartement&type_transaction=location&ville={{ville_id}}&meuble=true&prix_min=50000&prix_max=200000",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [],
+              "query": [
+                {
+                  "key": "type_bien",
+                  "value": "appartement"
+                },
+                {
+                  "key": "type_transaction",
+                  "value": "location"
+                },
+                {
+                  "key": "ville",
+                  "value": "{{ville_id}}"
+                },
+                {
+                  "key": "meuble",
+                  "value": "true"
+                },
+                {
+                  "key": "prix_min",
+                  "value": "50000"
+                },
+                {
+                  "key": "prix_max",
+                  "value": "200000"
+                }
+              ]
+            },
+            "description": ""
+          },
+          "response": []
+        },
+        {
+          "name": "8. Filtrer par disponibilite sur une periode",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/?disponible_du=2026-09-01&disponible_au=2026-09-10",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [],
+              "query": [
+                {
+                  "key": "disponible_du",
+                  "value": "2026-09-01"
+                },
+                {
+                  "key": "disponible_au",
+                  "value": "2026-09-10"
+                }
+              ]
+            },
+            "description": "Exclut automatiquement les biens ayant une Indisponibilite qui chevauche la periode."
+          },
+          "response": []
+        },
+        {
+          "name": "9. Recuperer un bien via sa reference unique",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": []
+            },
+            "description": "Retourne la fiche complete : equipements, medias, calendrier, details terrain/ceremonie."
+          },
+          "response": []
+        },
+        {
+          "name": "10. Modifier un bien (PATCH - ex: baisser le prix)",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Token {{token_parrain}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": []
+            },
+            "description": "",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"prix\": 100000\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "11. Desactiver un bien (retrait de la vitrine, sans le supprimer)",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Token {{token_parrain}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": []
+            },
+            "description": "",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"actif\": false\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "12. [Test negatif] Modifier un bien avec un autre utilisateur -> 403",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Token {{token_filleul}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": []
+            },
+            "description": "Doit renvoyer 403 : seul le gestionnaire du bien (ou un admin) peut le modifier.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"prix\": 1\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Statut 403 Forbidden', () => pm.response.to.have.status(403));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "13. Supprimer un bien",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Token {{token_parrain}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": []
+            },
+            "description": "A executer en dernier si vous voulez tester la suppression (sinon ne pas lancer, le bien est reutilise plus bas)."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "05 - Medias (photos / videos d'un bien)",
+      "description": "",
+      "item": [
+        {
+          "name": "1. Ajouter une photo a un bien (multipart)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Token {{token_parrain}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": []
+            },
+            "description": "Selectionner un fichier image dans le champ 'fichier' (type=file) dans Postman.",
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "bien",
+                  "value": "{{bien_terrain_id}}",
+                  "type": "text"
+                },
+                {
+                  "key": "type_media",
+                  "value": "image",
+                  "type": "text"
+                },
+                {
+                  "key": "legende",
+                  "value": "Vue d'ensemble du terrain",
+                  "type": "text"
+                },
+                {
+                  "key": "fichier",
+                  "type": "file",
+                  "src": ""
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "2. Ajouter une video a un bien (multipart)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Token {{token_parrain}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": []
+            },
+            "description": "",
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "bien",
+                  "value": "{{bien_terrain_id}}",
+                  "type": "text"
+                },
+                {
+                  "key": "type_media",
+                  "value": "video",
+                  "type": "text"
+                },
+                {
+                  "key": "legende",
+                  "value": "Visite video du terrain",
+                  "type": "text"
+                },
+                {
+                  "key": "fichier",
+                  "type": "file",
+                  "src": ""
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "3. Lister les medias d'un bien",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/?bien={{bien_terrain_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [],
+              "query": [
+                {
+                  "key": "bien",
+                  "value": "{{bien_terrain_id}}"
+                }
+              ]
+            },
+            "description": ""
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "06 - Calendrier de disponibilite",
+      "description": "",
+      "item": [
+        {
+          "name": "1. Bloquer une periode (ex: deja reserve hors plateforme)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Token {{token_parrain}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": []
+            },
+            "description": "",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"bien\": \"{{bien_terrain_id}}\",\n  \"date_debut\": \"2026-09-05\",\n  \"date_fin\": \"2026-09-15\",\n  \"motif\": \"Deja reserve\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "2. Lister le calendrier d'un bien",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/?bien={{bien_terrain_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [],
+              "query": [
+                {
+                  "key": "bien",
+                  "value": "{{bien_terrain_id}}"
+                }
+              ]
+            },
+            "description": ""
+          },
+          "response": []
+        },
+        {
+          "name": "3. Verifier que la recherche exclut ce bien sur cette periode",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/?disponible_du=2026-09-08&disponible_au=2026-09-10",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [],
+              "query": [
+                {
+                  "key": "disponible_du",
+                  "value": "2026-09-08"
+                },
+                {
+                  "key": "disponible_au",
+                  "value": "2026-09-10"
+                }
+              ]
+            },
+            "description": "Le bien bloque a l'etape 1 ne doit plus apparaitre dans les resultats."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "07 - Transactions (vente / location)",
+      "description": "",
+      "item": [
+        {
+          "name": "1. Le filleul achete le terrain (creation transaction VENTE)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Token {{token_filleul}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": []
+            },
+            "description": "",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"bien\": \"{{bien_terrain_id}}\",\n  \"type_transaction\": \"vente\",\n  \"montant_total\": 15000000,\n  \"statut\": \"en_attente\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const data = pm.response.json();",
+                  "pm.test('Statut 201', () => pm.response.to.have.status(201));",
+                  "pm.collectionVariables.set('transaction_vente_id', data.id);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "2. Confirmer la transaction de vente",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Token {{token_parrain}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": []
+            },
+            "description": "Declenche automatiquement (signal) : credit de points de fidelite au parrain du client (le filleul), une seule fois.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"statut\": \"confirmee\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "3. Verifier le solde de points du parrain (doit avoir augmente de 50)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Token {{token_parrain}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": []
+            },
+            "description": ""
+          },
+          "response": []
+        },
+        {
+          "name": "4. Le filleul loue l'appartement (creation transaction LOCATION)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Token {{token_filleul}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": []
+            },
+            "description": "",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"bien\": \"{{bien_appart_id}}\",\n  \"type_transaction\": \"location\",\n  \"date_debut\": \"2026-10-01\",\n  \"date_fin\": \"2026-10-31\",\n  \"montant_total\": 120000,\n  \"statut\": \"en_attente\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const data = pm.response.json();",
+                  "pm.collectionVariables.set('transaction_location_id', data.id);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "5. Confirmer la location",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Token {{token_parrain}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": []
+            },
+            "description": "Bloque automatiquement la periode 01/10 - 31/10 dans le calendrier de l'appartement.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"statut\": \"confirmee\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "6. Verifier le blocage automatique du calendrier",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/?bien={{bien_appart_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [],
+              "query": [
+                {
+                  "key": "bien",
+                  "value": "{{bien_appart_id}}"
+                }
+              ]
+            },
+            "description": ""
+          },
+          "response": []
+        },
+        {
+          "name": "7. Lister mes transactions (client ou gestionnaire connecte)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Token {{token_parrain}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": []
+            },
+            "description": ""
+          },
+          "response": []
+        },
+        {
+          "name": "8. [Test negatif] Louer un bien deja indisponible sur la periode -> 400",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Token {{token_filleul}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": []
+            },
+            "description": "",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"bien\": \"{{bien_appart_id}}\",\n  \"type_transaction\": \"location\",\n  \"date_debut\": \"2026-10-10\",\n  \"date_fin\": \"2026-10-15\",\n  \"montant_total\": 50000\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Statut 400 - periode indisponible', () => pm.response.to.have.status(400));"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "08 - Fidelite (points & cadeaux)",
+      "description": "",
+      "item": [
+        {
+          "name": "1. Creer un cadeau (necessite un admin, voir dossier 10)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Token {{token_admin}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": []
+            },
+            "description": "",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nom\": \"Bon d'achat 20 000 MRU\",\n  \"description\": \"Converti en especes chez notre partenaire.\",\n  \"points_necessaires\": 40,\n  \"valeur_argent\": 20000,\n  \"stock\": 10,\n  \"actif\": true\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const data = pm.response.json();",
+                  "pm.collectionVariables.set('cadeau_id', data.id);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "2. Lister les cadeaux disponibles",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": []
+            },
+            "description": ""
+          },
+          "response": []
+        },
+        {
+          "name": "3. Le parrain echange ses points contre un cadeau",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Token {{token_parrain}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": []
+            },
+            "description": "Le solde de points_fidelite du parrain doit etre suffisant (voir dossier 07 etape 3).",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"cadeau\": \"{{cadeau_id}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "4. Historique de mes echanges de cadeaux",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Token {{token_parrain}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": []
+            },
+            "description": ""
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "09 - Offres (panier publicitaire Agharina)",
+      "description": "",
+      "item": [
+        {
+          "name": "1. Creer une offre generale (publicite, admin uniquement)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Token {{token_admin}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": []
+            },
+            "description": "",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"titre\": \"Grande promo rentree 2026\",\n  \"description\": \"-10% sur toutes les locations d'appartements ce mois-ci.\",\n  \"type_offre\": \"publicite\",\n  \"date_debut\": \"2026-08-01\",\n  \"date_fin\": \"2026-09-30\",\n  \"actif\": true\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "2. Creer une offre ciblee sur un bien (reduction)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Token {{token_admin}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": []
+            },
+            "description": "",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"titre\": \"Reduction terrain vue mer\",\n  \"type_offre\": \"reduction\",\n  \"bien\": \"{{bien_terrain_id}}\",\n  \"reduction_pourcentage\": 5,\n  \"date_debut\": \"2026-08-01\",\n  \"date_fin\": \"2026-12-31\",\n  \"actif\": true\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "3. Lister le panier d'offres actives (public)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": []
+            },
+            "description": "Visible par tous, sans authentification. Ne montre que les offres actives et en cours."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "10 - Administration",
+      "description": "",
+      "item": [
+        {
+          "name": "1. Connexion admin (superuser cree via manage.py createsuperuser)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": []
+            },
+            "description": "Creer d'abord un superuser en local : python manage.py createsuperuser",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"admin\",\n  \"password\": \"MotDePasseAdmin123!\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const data = pm.response.json();",
+                  "pm.collectionVariables.set('token_admin', data.token);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "2. Lister tous les utilisateurs (admin)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Token {{token_admin}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": []
+            },
+            "description": ""
+          },
+          "response": []
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,2360 @@
+{
+  "info": {
+    "name": "Agharina - Reference API (tous les endpoints)",
+    "description": "Chaque requete est independante : un endpoint = une requete, avec son body d'exemple. Remplacez les valeurs entre :deux-points ou {{...}} par vos propres ids/references avant d'envoyer.\n\nAuth : la plupart des ecritures necessitent l'en-tete 'Authorization: Token <votre_token>' (obtenu via POST /connexion/).",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://127.0.0.1:8000/api"
+    },
+    {
+      "key": "token",
+      "value": "COLLEZ_ICI_VOTRE_TOKEN"
+    }
+  ],
+  "item": [
+    {
+      "name": "1. Comptes & Authentification",
+      "description": "",
+      "item": [
+        {
+          "name": "Inscription (creer un compte)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/inscription/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "inscription"
+              ]
+            },
+            "description": "code_parrain est optionnel : mettre le code_invitation d'un utilisateur existant pour le parrainage.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"mamadou_proprio\",\n  \"email\": \"mamadou@agharina.mr\",\n  \"password\": \"MotDePasse123!\",\n  \"first_name\": \"Mamadou\",\n  \"last_name\": \"Ba\",\n  \"telephone\": \"22212345678\",\n  \"est_gestionnaire\": true,\n  \"code_parrain\": \"\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Connexion (obtenir un token)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/connexion/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "connexion"
+              ]
+            },
+            "description": "",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"mamadou_proprio\",\n  \"password\": \"MotDePasse123!\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Voir mon profil",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Token {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/profil/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "profil"
+              ]
+            },
+            "description": ""
+          },
+          "response": []
+        },
+        {
+          "name": "Modifier mon profil",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Token {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/profil/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "profil"
+              ]
+            },
+            "description": "",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"telephone\": \"22299999999\",\n  \"first_name\": \"Mamadou\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Mon solde de points de fidelite + historique",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Token {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/mes-points/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "mes-points"
+              ]
+            },
+            "description": ""
+          },
+          "response": []
+        },
+        {
+          "name": "Lister les utilisateurs",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Token {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/utilisateurs/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "utilisateurs"
+              ]
+            },
+            "description": ""
+          },
+          "response": []
+        },
+        {
+          "name": "Detail d'un utilisateur",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Token {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/utilisateurs/:id/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "utilisateurs",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "1",
+                  "description": "ID de l'utilisateur (voir GET /utilisateurs/)."
+                }
+              ]
+            },
+            "description": "Remplacer :id par l'id de l'utilisateur."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "2. Localisation (Ville / Quartier)",
+      "description": "",
+      "item": [
+        {
+          "name": "Lister les villes",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/villes/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "villes"
+              ]
+            },
+            "description": ""
+          },
+          "response": []
+        },
+        {
+          "name": "Creer une ville",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Token {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/villes/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "villes"
+              ]
+            },
+            "description": "",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nom\": \"Nouakchott\",\n  \"region\": \"Nouakchott\",\n  \"pays\": \"Mauritanie\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Detail d'une ville",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/villes/:id/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "villes",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "1",
+                  "description": "ID de la ville (voir GET /villes/)."
+                }
+              ]
+            },
+            "description": ""
+          },
+          "response": []
+        },
+        {
+          "name": "Modifier une ville",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Token {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/villes/:id/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "villes",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "1",
+                  "description": "ID de la ville (voir GET /villes/)."
+                }
+              ]
+            },
+            "description": "",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"region\": \"Nouakchott Nord\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Supprimer une ville",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Token {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/villes/:id/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "villes",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "1",
+                  "description": "ID de la ville (voir GET /villes/)."
+                }
+              ]
+            },
+            "description": ""
+          },
+          "response": []
+        },
+        {
+          "name": "Lister les quartiers",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/quartiers/?ville=1",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "quartiers"
+              ],
+              "query": [
+                {
+                  "key": "ville",
+                  "value": "1"
+                }
+              ]
+            },
+            "description": "Le filtre 'ville' est optionnel."
+          },
+          "response": []
+        },
+        {
+          "name": "Creer un quartier",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Token {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/quartiers/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "quartiers"
+              ]
+            },
+            "description": "",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"ville\": 1,\n  \"nom\": \"Tevragh Zeina\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Detail d'un quartier",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/quartiers/:id/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "quartiers",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "1",
+                  "description": "ID du quartier (voir GET /quartiers/)."
+                }
+              ]
+            },
+            "description": ""
+          },
+          "response": []
+        },
+        {
+          "name": "Modifier un quartier",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Token {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/quartiers/:id/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "quartiers",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "1",
+                  "description": "ID du quartier (voir GET /quartiers/)."
+                }
+              ]
+            },
+            "description": "",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nom\": \"Tevragh Zeina Extension\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Supprimer un quartier",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Token {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/quartiers/:id/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "quartiers",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "1",
+                  "description": "ID du quartier (voir GET /quartiers/)."
+                }
+              ]
+            },
+            "description": ""
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "3. Equipements (caracteristiques des biens)",
+      "description": "",
+      "item": [
+        {
+          "name": "Lister les equipements",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/equipements/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "equipements"
+              ]
+            },
+            "description": ""
+          },
+          "response": []
+        },
+        {
+          "name": "Creer un equipement",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Token {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/equipements/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "equipements"
+              ]
+            },
+            "description": "Exemples: Piscine, Camera de securite, Garage, Chambre de gardien, Balcon, Climatisation, Wifi.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nom\": \"Piscine\",\n  \"icone\": \"piscine\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Detail d'un equipement",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/equipements/:id/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "equipements",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "1",
+                  "description": "ID de l'equipement (voir GET /equipements/)."
+                }
+              ]
+            },
+            "description": ""
+          },
+          "response": []
+        },
+        {
+          "name": "Modifier un equipement",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Token {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/equipements/:id/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "equipements",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "1",
+                  "description": "ID de l'equipement (voir GET /equipements/)."
+                }
+              ]
+            },
+            "description": "",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"icone\": \"pool\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Supprimer un equipement",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Token {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/equipements/:id/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "equipements",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "1",
+                  "description": "ID de l'equipement (voir GET /equipements/)."
+                }
+              ]
+            },
+            "description": ""
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "4. Biens immobiliers",
+      "description": "",
+      "item": [
+        {
+          "name": "Lister / rechercher les biens",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/biens/?type_bien=appartement&type_transaction=location&ville=1&quartier=1&meuble=true&nb_chambres=2&prix_min=50000&prix_max=300000&disponible_du=2026-09-01&disponible_au=2026-09-10&search=&ordering=prix",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "biens"
+              ],
+              "query": [
+                {
+                  "key": "type_bien",
+                  "value": "appartement"
+                },
+                {
+                  "key": "type_transaction",
+                  "value": "location"
+                },
+                {
+                  "key": "ville",
+                  "value": "1"
+                },
+                {
+                  "key": "quartier",
+                  "value": "1"
+                },
+                {
+                  "key": "meuble",
+                  "value": "true"
+                },
+                {
+                  "key": "nb_chambres",
+                  "value": "2"
+                },
+                {
+                  "key": "prix_min",
+                  "value": "50000"
+                },
+                {
+                  "key": "prix_max",
+                  "value": "300000"
+                },
+                {
+                  "key": "disponible_du",
+                  "value": "2026-09-01"
+                },
+                {
+                  "key": "disponible_au",
+                  "value": "2026-09-10"
+                },
+                {
+                  "key": "search",
+                  "value": ""
+                },
+                {
+                  "key": "ordering",
+                  "value": "prix"
+                }
+              ]
+            },
+            "description": "Tous les parametres sont optionnels, a combiner selon besoin. type_bien: ceremonie|duplexe|appartement|terrain|commercial. type_transaction: vente|location."
+          },
+          "response": []
+        },
+        {
+          "name": "Creer un bien - TERRAIN (vente)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Token {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/biens/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "biens"
+              ]
+            },
+            "description": "",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"titre\": \"Terrain vue mer - 500 m2\",\n  \"description\": \"Beau terrain plat, proche de la plage.\",\n  \"type_bien\": \"terrain\",\n  \"type_transaction\": \"vente\",\n  \"prix\": 15000000,\n  \"unite_prix\": \"forfait\",\n  \"ville\": 1,\n  \"quartier\": 1,\n  \"adresse_complete\": \"Route de la Corniche\",\n  \"latitude\": 18.0858,\n  \"longitude\": -15.9785,\n  \"nb_proprietaires\": 1,\n  \"equipements_ids\": [],\n  \"detail_terrain\": {\n    \"superficie_m2\": 500,\n    \"longueur_m\": 25,\n    \"largeur_m\": 20,\n    \"titre_foncier\": \"TF-2024-00123\",\n    \"borne\": true\n  }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Creer un bien - APPARTEMENT (location/mois)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Token {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/biens/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "biens"
+              ]
+            },
+            "description": "",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"titre\": \"Appartement meuble 3 pieces\",\n  \"description\": \"Appartement standing, proche du centre-ville.\",\n  \"type_bien\": \"appartement\",\n  \"type_transaction\": \"location\",\n  \"meuble\": true,\n  \"nb_chambres\": 2,\n  \"nb_salles_bain\": 2,\n  \"nb_etages\": 1,\n  \"prix\": 120000,\n  \"unite_prix\": \"mois\",\n  \"ville\": 1,\n  \"quartier\": 1,\n  \"adresse_complete\": \"Ilot O\",\n  \"latitude\": 18.0919,\n  \"longitude\": -15.9784,\n  \"nb_proprietaires\": 1,\n  \"equipements_ids\": [\n    1,\n    2\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Creer un bien - MAISON DE CEREMONIE (location/jour)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Token {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/biens/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "biens"
+              ]
+            },
+            "description": "",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"titre\": \"Salle de ceremonie Al Amal\",\n  \"description\": \"Grande salle climatisee pour mariages et evenements.\",\n  \"type_bien\": \"ceremonie\",\n  \"type_transaction\": \"location\",\n  \"prix\": 250000,\n  \"unite_prix\": \"jour\",\n  \"ville\": 1,\n  \"latitude\": 18.0801,\n  \"longitude\": -15.9701,\n  \"nb_proprietaires\": 2,\n  \"detail_ceremonie\": {\n    \"avec_service\": true,\n    \"description_service\": \"Traiteur, decoration et personnel inclus.\",\n    \"capacite_personnes\": 500\n  }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Creer un bien - DUPLEXE (vente)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Token {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/biens/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "biens"
+              ]
+            },
+            "description": "",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"titre\": \"Duplexe moderne 4 chambres\",\n  \"type_bien\": \"duplexe\",\n  \"type_transaction\": \"vente\",\n  \"meuble\": false,\n  \"nb_chambres\": 4,\n  \"nb_salles_bain\": 3,\n  \"nb_etages\": 2,\n  \"prix\": 45000000,\n  \"unite_prix\": \"forfait\",\n  \"ville\": 1,\n  \"latitude\": 18.09,\n  \"longitude\": -15.96,\n  \"nb_proprietaires\": 1\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Creer un bien - COMMERCIAL (location/3jours)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Token {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/biens/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "biens"
+              ]
+            },
+            "description": "",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"titre\": \"Local commercial - stand exposition\",\n  \"type_bien\": \"commercial\",\n  \"type_transaction\": \"location\",\n  \"prix\": 60000,\n  \"unite_prix\": \"3jours\",\n  \"ville\": 1,\n  \"latitude\": 18.085,\n  \"longitude\": -15.975,\n  \"nb_proprietaires\": 1\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Detail d'un bien (par reference)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/biens/:reference/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "biens",
+                ":reference"
+              ],
+              "variable": [
+                {
+                  "key": "reference",
+                  "value": "AGH-TER-96EC5E5D",
+                  "description": "Reference unique du bien, ex: AGH-TER-96EC5E5D (voir GET /biens/)."
+                }
+              ]
+            },
+            "description": "Remplacer :reference par ex. AGH-TER-96EC5E5D. Retourne toutes les infos (equipements, medias, calendrier, details terrain/ceremonie)."
+          },
+          "response": []
+        },
+        {
+          "name": "Modifier un bien",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Token {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/biens/:reference/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "biens",
+                ":reference"
+              ],
+              "variable": [
+                {
+                  "key": "reference",
+                  "value": "AGH-TER-96EC5E5D",
+                  "description": "Reference unique du bien, ex: AGH-TER-96EC5E5D (voir GET /biens/)."
+                }
+              ]
+            },
+            "description": "",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"prix\": 100000\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Desactiver un bien (retrait de la vitrine)",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Token {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/biens/:reference/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "biens",
+                ":reference"
+              ],
+              "variable": [
+                {
+                  "key": "reference",
+                  "value": "AGH-TER-96EC5E5D",
+                  "description": "Reference unique du bien, ex: AGH-TER-96EC5E5D (voir GET /biens/)."
+                }
+              ]
+            },
+            "description": "",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"actif\": false\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Remplacer entierement un bien",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Token {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/biens/:reference/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "biens",
+                ":reference"
+              ],
+              "variable": [
+                {
+                  "key": "reference",
+                  "value": "AGH-TER-96EC5E5D",
+                  "description": "Reference unique du bien, ex: AGH-TER-96EC5E5D (voir GET /biens/)."
+                }
+              ]
+            },
+            "description": "",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"titre\": \"Appartement meuble 3 pieces - MAJ\",\n  \"type_bien\": \"appartement\",\n  \"type_transaction\": \"location\",\n  \"prix\": 130000,\n  \"unite_prix\": \"mois\",\n  \"ville\": 1,\n  \"latitude\": 18.0919,\n  \"longitude\": -15.9784,\n  \"nb_proprietaires\": 1\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Supprimer un bien",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Token {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/biens/:reference/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "biens",
+                ":reference"
+              ],
+              "variable": [
+                {
+                  "key": "reference",
+                  "value": "AGH-TER-96EC5E5D",
+                  "description": "Reference unique du bien, ex: AGH-TER-96EC5E5D (voir GET /biens/)."
+                }
+              ]
+            },
+            "description": ""
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "5. Medias (photos / videos d'un bien)",
+      "description": "",
+      "item": [
+        {
+          "name": "Lister les medias",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/medias/?bien=1",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "medias"
+              ],
+              "query": [
+                {
+                  "key": "bien",
+                  "value": "1"
+                }
+              ]
+            },
+            "description": ""
+          },
+          "response": []
+        },
+        {
+          "name": "Ajouter une photo (multipart)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Token {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/medias/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "medias"
+              ]
+            },
+            "description": "Selectionner un fichier dans le champ 'fichier' (type=file).",
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "bien",
+                  "value": "1",
+                  "type": "text"
+                },
+                {
+                  "key": "type_media",
+                  "value": "image",
+                  "type": "text"
+                },
+                {
+                  "key": "legende",
+                  "value": "Vue d'ensemble",
+                  "type": "text"
+                },
+                {
+                  "key": "fichier",
+                  "type": "file",
+                  "src": ""
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Ajouter une video (multipart)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Token {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/medias/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "medias"
+              ]
+            },
+            "description": "",
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "bien",
+                  "value": "1",
+                  "type": "text"
+                },
+                {
+                  "key": "type_media",
+                  "value": "video",
+                  "type": "text"
+                },
+                {
+                  "key": "legende",
+                  "value": "Visite video",
+                  "type": "text"
+                },
+                {
+                  "key": "fichier",
+                  "type": "file",
+                  "src": ""
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Ajouter plusieurs photos/videos en un seul appel (multipart)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Token {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/medias/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "medias"
+              ]
+            },
+            "description": "Repeter le champ 'fichier' plusieurs fois (meme cle, un fichier par ligne) pour envoyer plusieurs photos et/ou videos en un seul appel : un MediaBien est cree par fichier, tous avec le meme bien/type_media/legende. S'il n'y a qu'un seul fichier 'fichier', le comportement est identique a l'ajout unitaire (reponse = un seul objet). Pour melanger images et videos dans le meme appel, faire un appel par type_media (les fichiers d'un meme appel partagent le meme type_media).",
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "bien",
+                  "value": "1",
+                  "type": "text"
+                },
+                {
+                  "key": "type_media",
+                  "value": "image",
+                  "type": "text"
+                },
+                {
+                  "key": "legende",
+                  "value": "Photos exterieur",
+                  "type": "text"
+                },
+                {
+                  "key": "fichier",
+                  "type": "file",
+                  "src": []
+                },
+                {
+                  "key": "fichier",
+                  "type": "file",
+                  "src": []
+                },
+                {
+                  "key": "fichier",
+                  "type": "file",
+                  "src": []
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Detail d'un media",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/medias/:id/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "medias",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "1",
+                  "description": "ID du media (voir GET /medias/?bien=...)."
+                }
+              ]
+            },
+            "description": ""
+          },
+          "response": []
+        },
+        {
+          "name": "Modifier un media (legende, ordre)",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Token {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/medias/:id/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "medias",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "1",
+                  "description": "ID du media (voir GET /medias/?bien=...)."
+                }
+              ]
+            },
+            "description": "",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"legende\": \"Nouvelle legende\",\n  \"ordre\": 2\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Supprimer un media",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Token {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/medias/:id/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "medias",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "1",
+                  "description": "ID du media (voir GET /medias/?bien=...)."
+                }
+              ]
+            },
+            "description": ""
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "6. Calendrier de disponibilite (Indisponibilites)",
+      "description": "",
+      "item": [
+        {
+          "name": "Lister le calendrier d'un bien",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/indisponibilites/?bien=1",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "indisponibilites"
+              ],
+              "query": [
+                {
+                  "key": "bien",
+                  "value": "1"
+                }
+              ]
+            },
+            "description": ""
+          },
+          "response": []
+        },
+        {
+          "name": "Bloquer une periode",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Token {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/indisponibilites/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "indisponibilites"
+              ]
+            },
+            "description": "Peut couvrir un seul jour (date_debut = date_fin) ou un/plusieurs mois complets.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"bien\": 1,\n  \"date_debut\": \"2026-09-05\",\n  \"date_fin\": \"2026-09-15\",\n  \"motif\": \"Deja reserve\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Detail d'une periode bloquee",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/indisponibilites/:id/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "indisponibilites",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "1",
+                  "description": "ID de la periode d'indisponibilite (voir GET /indisponibilites/?bien=...)."
+                }
+              ]
+            },
+            "description": ""
+          },
+          "response": []
+        },
+        {
+          "name": "Modifier une periode bloquee",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Token {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/indisponibilites/:id/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "indisponibilites",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "1",
+                  "description": "ID de la periode d'indisponibilite (voir GET /indisponibilites/?bien=...)."
+                }
+              ]
+            },
+            "description": "",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"date_fin\": \"2026-09-20\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Debloquer une periode (supprimer)",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Token {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/indisponibilites/:id/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "indisponibilites",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "1",
+                  "description": "ID de la periode d'indisponibilite (voir GET /indisponibilites/?bien=...)."
+                }
+              ]
+            },
+            "description": ""
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "7. Transactions (vente / location)",
+      "description": "",
+      "item": [
+        {
+          "name": "Lister mes transactions",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Token {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/transactions/?statut=confirmee&type_transaction=vente&bien=1",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "transactions"
+              ],
+              "query": [
+                {
+                  "key": "statut",
+                  "value": "confirmee"
+                },
+                {
+                  "key": "type_transaction",
+                  "value": "vente"
+                },
+                {
+                  "key": "bien",
+                  "value": "1"
+                }
+              ]
+            },
+            "description": ""
+          },
+          "response": []
+        },
+        {
+          "name": "Creer une transaction - VENTE",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Token {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/transactions/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "transactions"
+              ]
+            },
+            "description": "",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"bien\": 1,\n  \"type_transaction\": \"vente\",\n  \"montant_total\": 15000000,\n  \"statut\": \"en_attente\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Creer une transaction - LOCATION",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Token {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/transactions/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "transactions"
+              ]
+            },
+            "description": "",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"bien\": 2,\n  \"type_transaction\": \"location\",\n  \"date_debut\": \"2026-10-01\",\n  \"date_fin\": \"2026-10-31\",\n  \"montant_total\": 120000,\n  \"statut\": \"en_attente\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Detail d'une transaction",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Token {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/transactions/:id/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "transactions",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "1",
+                  "description": "ID de la transaction (voir GET /transactions/)."
+                }
+              ]
+            },
+            "description": ""
+          },
+          "response": []
+        },
+        {
+          "name": "Confirmer une transaction",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Token {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/transactions/:id/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "transactions",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "1",
+                  "description": "ID de la transaction (voir GET /transactions/)."
+                }
+              ]
+            },
+            "description": "Declenche automatiquement : credit de points au parrain du client, et blocage du calendrier si c'est une location.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"statut\": \"confirmee\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Annuler une transaction",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Token {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/transactions/:id/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "transactions",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "1",
+                  "description": "ID de la transaction (voir GET /transactions/)."
+                }
+              ]
+            },
+            "description": "",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"statut\": \"annulee\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Marquer une transaction comme terminee",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Token {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/transactions/:id/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "transactions",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "1",
+                  "description": "ID de la transaction (voir GET /transactions/)."
+                }
+              ]
+            },
+            "description": "",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"statut\": \"terminee\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Supprimer une transaction",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Token {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/transactions/:id/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "transactions",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "1",
+                  "description": "ID de la transaction (voir GET /transactions/)."
+                }
+              ]
+            },
+            "description": ""
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "8. Fidelite (cadeaux & echanges de points)",
+      "description": "",
+      "item": [
+        {
+          "name": "Lister les cadeaux disponibles",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/cadeaux/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "cadeaux"
+              ]
+            },
+            "description": ""
+          },
+          "response": []
+        },
+        {
+          "name": "Creer un cadeau (admin)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Token {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/cadeaux/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "cadeaux"
+              ]
+            },
+            "description": "",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nom\": \"Bon d'achat 20 000 MRU\",\n  \"description\": \"Converti en especes chez notre partenaire.\",\n  \"points_necessaires\": 40,\n  \"valeur_argent\": 20000,\n  \"stock\": 10,\n  \"actif\": true\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Detail d'un cadeau",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/cadeaux/:id/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "cadeaux",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "1",
+                  "description": "ID du cadeau (voir GET /cadeaux/)."
+                }
+              ]
+            },
+            "description": ""
+          },
+          "response": []
+        },
+        {
+          "name": "Modifier un cadeau (admin)",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Token {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/cadeaux/:id/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "cadeaux",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "1",
+                  "description": "ID du cadeau (voir GET /cadeaux/)."
+                }
+              ]
+            },
+            "description": "",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"stock\": 5\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Supprimer un cadeau (admin)",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Token {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/cadeaux/:id/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "cadeaux",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "1",
+                  "description": "ID du cadeau (voir GET /cadeaux/)."
+                }
+              ]
+            },
+            "description": ""
+          },
+          "response": []
+        },
+        {
+          "name": "Lister mes echanges de cadeaux",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Token {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/echanges-cadeaux/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "echanges-cadeaux"
+              ]
+            },
+            "description": ""
+          },
+          "response": []
+        },
+        {
+          "name": "Echanger mes points contre un cadeau",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Token {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/echanges-cadeaux/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "echanges-cadeaux"
+              ]
+            },
+            "description": "",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"cadeau\": 1\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Detail d'un echange",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Token {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/echanges-cadeaux/:id/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "echanges-cadeaux",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "1",
+                  "description": "ID de l'echange de cadeau (voir GET /echanges-cadeaux/)."
+                }
+              ]
+            },
+            "description": ""
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "9. Offres (panier publicitaire Agharina)",
+      "description": "",
+      "item": [
+        {
+          "name": "Lister les offres actives (public)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/offres/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "offres"
+              ]
+            },
+            "description": ""
+          },
+          "response": []
+        },
+        {
+          "name": "Creer une offre generale (admin)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Token {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/offres/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "offres"
+              ]
+            },
+            "description": "",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"titre\": \"Grande promo rentree 2026\",\n  \"description\": \"-10% sur toutes les locations d'appartements ce mois-ci.\",\n  \"type_offre\": \"publicite\",\n  \"date_debut\": \"2026-08-01\",\n  \"date_fin\": \"2026-09-30\",\n  \"actif\": true\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Creer une offre ciblee sur un bien (admin)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Token {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/offres/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "offres"
+              ]
+            },
+            "description": "",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"titre\": \"Reduction terrain vue mer\",\n  \"type_offre\": \"reduction\",\n  \"bien\": 1,\n  \"reduction_pourcentage\": 5,\n  \"date_debut\": \"2026-08-01\",\n  \"date_fin\": \"2026-12-31\",\n  \"actif\": true\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Detail d'une offre",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/offres/:id/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "offres",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "1",
+                  "description": "ID de l'offre (voir GET /offres/)."
+                }
+              ]
+            },
+            "description": ""
+          },
+          "response": []
+        },
+        {
+          "name": "Modifier une offre (admin)",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Token {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/offres/:id/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "offres",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "1",
+                  "description": "ID de l'offre (voir GET /offres/)."
+                }
+              ]
+            },
+            "description": "",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"actif\": false\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Supprimer une offre (admin)",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Token {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/offres/:id/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "offres",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "1",
+                  "description": "ID de l'offre (voir GET /offres/)."
+                }
+              ]
+            },
+            "description": ""
+          },
+          "response": []
+        }
+      ]
+    }
+  ]
+}
