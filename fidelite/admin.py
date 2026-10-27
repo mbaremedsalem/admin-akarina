@@ -10,5 +10,6 @@ class CadeauAdmin(admin.ModelAdmin):
 
 @admin.register(EchangeCadeau)
 class EchangeCadeauAdmin(admin.ModelAdmin):
-    list_display = ["utilisateur", "cadeau", "points_utilises", "statut", "date_creation"]
+    list_display = ["reference", "utilisateur", "cadeau", "points_utilises", "statut", "date_creation"]
     list_filter = ["statut"]
+    search_fields = ["reference", "utilisateur__username", "cadeau__nom"]

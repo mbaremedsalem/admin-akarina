@@ -36,10 +36,18 @@ def attribuer_points_et_bloquer_calendrier(sender, instance: Transaction, **kwar
             )
         Transaction.objects.filter(pk=instance.pk).update(points_attribues=True)
 
-    if instance.type_transaction == Bien.TypeTransaction.LOCATION and instance.date_debut and instance.date_fin:
+    if (
+        instance.type_transaction == Bien.TypeTransaction.LOCATION
+        and instance.date_debut
+        and instance.date_fin
+        and instance.bien.unite_prix != Bien.UnitePrix.MOIS
+    ):
         Indisponibilite.objects.get_or_create(
             bien=instance.bien,
             date_debut=instance.date_debut,
             date_fin=instance.date_fin,
             defaults={"motif": f"Loue via transaction {instance.reference}"},
         )
+
+    if instance.type_transaction == Bien.TypeTransaction.VENTE and not instance.bien.vendu:
+        Bien.objects.filter(pk=instance.bien_id).update(vendu=True)

@@ -1,3 +1,5 @@
+import uuid
+
 from django.conf import settings
 from django.db import models
 from django.db.models.signals import post_delete, pre_save
@@ -44,7 +46,9 @@ class EchangeCadeau(models.Model):
         EN_ATTENTE = "en_attente", "En attente"
         VALIDE = "valide", "Valide"
         REFUSE = "refuse", "Refuse"
+        RECEPTIONNE = "receptionne", "Receptionne"
 
+    reference = models.CharField(max_length=25, unique=True, editable=False)
     utilisateur = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="echanges_cadeaux")
     cadeau = models.ForeignKey(Cadeau, on_delete=models.PROTECT, related_name="echanges")
     points_utilises = models.PositiveIntegerField()
@@ -54,5 +58,27 @@ class EchangeCadeau(models.Model):
     class Meta:
         ordering = ["-date_creation"]
 
+    def save(self, *args, **kwargs):
+        if not self.reference:
+            self.reference = f"CAD-{uuid.uuid4().hex[:10].upper()}"
+        super().save(*args, **kwargs)
+
+    def rembourser(self, description):
+        """Recredite les points au client et remet le cadeau en stock (refus ou suppression par l'admin)."""
+        from comptes.models import TransactionPoints
+
+        self.utilisateur.points_fidelite += self.points_utilises
+        self.utilisateur.save(update_fields=["points_fidelite"])
+
+        self.cadeau.stock += 1
+        self.cadeau.save(update_fields=["stock"])
+
+        TransactionPoints.objects.create(
+            utilisateur=self.utilisateur,
+            type_mouvement=TransactionPoints.TypeMouvement.GAGNE,
+            points=self.points_utilises,
+            description=description,
+        )
+
     def __str__(self):
-        return f"{self.utilisateur} -> {self.cadeau} ({self.statut})"
+        return f"{self.reference} - {self.utilisateur} -> {self.cadeau} ({self.statut})"

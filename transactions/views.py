@@ -21,4 +21,4 @@ class TransactionViewSet(viewsets.ModelViewSet):
             return qs
         # un client voit ses transactions, un gestionnaire voit celles de ses biens
         from django.db.models import Q
-        return qs.filter(Q(client=self.request.user) | Q(bien__gestionnaire=self.request.user))
+        return qs.filter(Q(client=self.request.user) | Q(bien__gestionnaires=self.request.user)).distinct()

@@ -6,3 +6,4 @@ media/
 staticfiles/
 .venv/
 venv/
+*firebase-adminsdk*.json

@@ -35,6 +35,7 @@ INSTALLED_APPS = [
     "transactions",
     "fidelite",
     "offres",
+    "notifications",
 ]
 
 MIDDLEWARE = [
@@ -68,24 +69,32 @@ TEMPLATES = [
 
 WSGI_APPLICATION = "config.wsgi.application"
 
+# DATABASES = {
+#     "default": {
+#         "ENGINE": os.environ.get("DB_ENGINE", "django.db.backends.sqlite3"),
+#         "NAME": os.environ.get("DB_NAME", BASE_DIR / "db.sqlite3"),
+#         "USER": os.environ.get("DB_USER", ""),
+#         "PASSWORD": os.environ.get("DB_PASSWORD", ""),
+#         "HOST": os.environ.get("DB_HOST", ""),
+#         "PORT": os.environ.get("DB_PORT", ""),
+#         # Schema dedie : cette base est partagee avec un autre projet (Akareena) sur
+#         # le meme cluster PostgreSQL. "agharina" isole completement nos tables et
+#         # notre historique de migrations de l'existant (schema "public").
+#         "OPTIONS": (
+#             {"sslmode": "require", "options": "-c search_path=agharina"}
+#             if os.environ.get("DB_HOST")
+#             else {}
+#         ),
+#     }
+# }
+
 DATABASES = {
-    "default": {
-        "ENGINE": os.environ.get("DB_ENGINE", "django.db.backends.sqlite3"),
-        "NAME": os.environ.get("DB_NAME", BASE_DIR / "db.sqlite3"),
-        "USER": os.environ.get("DB_USER", ""),
-        "PASSWORD": os.environ.get("DB_PASSWORD", ""),
-        "HOST": os.environ.get("DB_HOST", ""),
-        "PORT": os.environ.get("DB_PORT", ""),
-        # Schema dedie : cette base est partagee avec un autre projet (Akareena) sur
-        # le meme cluster PostgreSQL. "agharina" isole completement nos tables et
-        # notre historique de migrations de l'existant (schema "public").
-        "OPTIONS": (
-            {"sslmode": "require", "options": "-c search_path=agharina"}
-            if os.environ.get("DB_HOST")
-            else {}
-        ),
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
+
 
 AUTH_USER_MODEL = "comptes.Utilisateur"
 
@@ -104,6 +113,12 @@ USE_TZ = True
 STATIC_URL = "static/"
 MEDIA_URL = "/media/"
 MEDIA_ROOT = BASE_DIR / "media"
+
+# Un bien peut recevoir jusqu'a 35 photos/videos en un seul POST (voir
+# MediaBienViewSet.create) : on autorise explicitement une marge au-dessus
+# de ce chiffre plutot que de dependre des valeurs par defaut de Django.
+DATA_UPLOAD_MAX_NUMBER_FILES = 50
+DATA_UPLOAD_MAX_NUMBER_FIELDS = 100
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
@@ -128,3 +143,11 @@ REST_FRAMEWORK = {
 # Frontend admin (agharina-admin-frontend) sert depuis un autre port en dev.
 # CORS_ALLOW_ALL_ORIGINS n'est active qu'en DEBUG (jamais en production).
 CORS_ALLOW_ALL_ORIGINS = DEBUG
+
+# Notifications push (Firebase Cloud Messaging). Le fichier de la cle de service
+# n'est jamais commite (voir .gitignore) ; en production, definir
+# FIREBASE_CREDENTIALS_PATH vers un emplacement securise en dehors du depot.
+FIREBASE_CREDENTIALS_PATH = os.environ.get(
+    "FIREBASE_CREDENTIALS_PATH",
+    str(BASE_DIR / "akarena-firebase-adminsdk-fbsvc-a00a0e1886.json"),
+)

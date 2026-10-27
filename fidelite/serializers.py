@@ -13,10 +13,16 @@ class CadeauSerializer(serializers.ModelSerializer):
 
 
 class EchangeCadeauSerializer(serializers.ModelSerializer):
+    cadeau_nom = serializers.CharField(source="cadeau.nom", read_only=True)
+    cadeau_image = serializers.ImageField(source="cadeau.image", read_only=True)
+
     class Meta:
         model = EchangeCadeau
-        fields = ["id", "utilisateur", "cadeau", "points_utilises", "statut", "date_creation"]
-        read_only_fields = ["utilisateur", "points_utilises", "statut", "date_creation"]
+        fields = [
+            "id", "reference", "utilisateur", "cadeau", "cadeau_nom", "cadeau_image", "points_utilises",
+            "statut", "date_creation",
+        ]
+        read_only_fields = ["reference", "utilisateur", "points_utilises", "statut", "date_creation"]
 
     @db_transaction.atomic
     def create(self, validated_data):
@@ -46,3 +52,17 @@ class EchangeCadeauSerializer(serializers.ModelSerializer):
             cadeau=cadeau,
             points_utilises=cadeau.points_necessaires,
         )
+
+
+class EchangeCadeauUpdateSerializer(EchangeCadeauSerializer):
+    """Reservee a l'admin : seul le statut de l'echange est modifiable."""
+
+    class Meta(EchangeCadeauSerializer.Meta):
+        read_only_fields = ["reference", "utilisateur", "cadeau", "points_utilises", "date_creation"]
+
+    @db_transaction.atomic
+    def update(self, instance, validated_data):
+        nouveau_statut = validated_data.get("statut", instance.statut)
+        if nouveau_statut == EchangeCadeau.Statut.REFUSE and instance.statut != EchangeCadeau.Statut.REFUSE:
+            instance.rembourser(f"Remboursement suite au refus de l'echange: {instance.cadeau.nom}")
+        return super().update(instance, validated_data)

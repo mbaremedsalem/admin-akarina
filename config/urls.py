@@ -11,6 +11,7 @@ urlpatterns = [
     path("api/", include("transactions.urls")),
     path("api/", include("fidelite.urls")),
     path("api/", include("offres.urls")),
+    path("api/", include("notifications.urls")),
 ]
 
 if settings.DEBUG:

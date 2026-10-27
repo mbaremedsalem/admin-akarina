@@ -10,6 +10,7 @@ class BienFilter(filters.FilterSet):
     quartier = filters.NumberFilter(field_name="quartier_id")
     disponible_du = filters.DateFilter(method="filtrer_disponibilite")
     disponible_au = filters.DateFilter(method="filtrer_disponibilite")
+    numero_lot = filters.CharFilter(field_name="detail_terrain__numero_lot", lookup_expr="iexact")
 
     class Meta:
         model = Bien
@@ -26,5 +27,10 @@ class BienFilter(filters.FilterSet):
             biens_indisponibles = Indisponibilite.objects.filter(
                 date_debut__lte=date_fin, date_fin__gte=date_debut
             ).values_list("bien_id", flat=True)
-            return queryset.exclude(id__in=biens_indisponibles)
+            # Les biens mensuels n'ont pas de calendrier : leur disponibilite
+            # depend uniquement du statut manuel, pas des dates demandees.
+            non_disponibles_mois = queryset.filter(unite_prix=Bien.UnitePrix.MOIS).exclude(
+                statut_disponibilite=Bien.StatutDisponibilite.DISPONIBLE
+            ).values_list("id", flat=True)
+            return queryset.exclude(id__in=biens_indisponibles).exclude(id__in=non_disponibles_mois)
         return queryset
